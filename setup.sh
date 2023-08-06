@@ -7,19 +7,19 @@ git clone https://github.com/ggerganov/whisper.cpp
 
   make
 
-  bash ./models/download-ggml-model.sh large
+  bash ./models/download-ggml-model.sh large &>/dev/null
 
   if [ ! -f models/ggml-large-q4_1.bin ]; then
     ./quantize models/ggml-large.bin models/ggml-large-q4_1.bin q4_1 >/dev/null
   fi
 
-  bash ./models/download-ggml-model.sh base
+  bash ./models/download-ggml-model.sh base &>/dev/null
 
   if [ ! -f models/ggml-base-q4_1.bin ]; then
     ./quantize models/ggml-base.bin models/ggml-base-q4_1.bin q4_1 >/dev/null
   fi
 
-  bash ./models/download-ggml-model.sh small
+  bash ./models/download-ggml-model.sh small &>/dev/null
 
   if [ ! -f models/ggml-small-q4_1.bin ]; then
     ./quantize models/ggml-small.bin models/ggml-small-q4_1.bin q4_1 >/dev/null
