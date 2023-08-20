@@ -52,7 +52,8 @@ def main(index_file: str, num_threads: int = 8, color: str = "#51da4c", tag: boo
     # Only consider documents that were modified since the last run of this script
     whisper_version = index.get("whisper_version", default=0)
 
-    where = f"(json_data->>'mime' LIKE 'audio/%' OR json_data->>'mime' LIKE 'video/%') AND version > {whisper_version}"
+    where = f"(json_extract(json_data, '$.mime') LIKE 'audio/%' " \
+            f"OR json_extract(json_data, '$.mime') LIKE 'video/%') AND version > {whisper_version}"
 
     total = index.document_count(where)
     done = 0
