@@ -35,7 +35,7 @@ def whisper_stt(input_audio: str, num_threads: int, model: str):
         "--output-txt",
     ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
-    with open(wav_path + ".txt") as f:
+    with open(wav_path + ".txt", encoding="utf8", errors="ignore") as f:
         text = f.read()
 
     return text
