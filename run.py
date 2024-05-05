@@ -36,6 +36,7 @@ def whisper_stt(input_audio: str, num_threads: int, model: str):
     subprocess.run(
         [
             "whisper.cpp/main",
+            "-l 'auto'",
             "-t",
             str(num_threads),
             "-m",
@@ -72,8 +73,8 @@ def main(
     whisper_version = index.get("whisper_version", default=0)
 
     where = (
-        f"((SELECT name FROM mime WHERE id=document.mime AND  ifnull(content, '') = '') LIKE 'audio/%' "
-        f"OR (SELECT name FROM mime WHERE id=document.mime AND  ifnull(content, '') = '') LIKE 'video/%') AND version > {whisper_version}"
+        f"((SELECT name FROM mime WHERE id=document.mime ) LIKE 'audio/%' "
+        f"OR (SELECT name FROM mime WHERE id=document.mime ) LIKE 'video/%') AND version > {whisper_version}"
     )
 
     total = index.document_count(where)
