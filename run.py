@@ -18,7 +18,10 @@ def whisper_stt(input_audio: str, num_threads: int, model: str):
         os.remove(wav_path)
     except:
         pass
-
+    try:
+        os.remove(wav_path + ".txt")
+    except:
+        pass
     subprocess.run(
         [
             "ffmpeg",
@@ -36,7 +39,8 @@ def whisper_stt(input_audio: str, num_threads: int, model: str):
     subprocess.run(
         [
             "whisper.cpp/main",
-            "-l 'auto'",
+            "-l",
+            "auto",
             "-t",
             str(num_threads),
             "-m",
@@ -48,10 +52,12 @@ def whisper_stt(input_audio: str, num_threads: int, model: str):
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL,
     )
-
-    with open(wav_path + ".txt", encoding="utf8", errors="ignore") as f:
-        text = f.read()
-
+    try:
+        text = None
+        with open(wav_path + ".txt", encoding="utf8", errors="ignore") as f:
+            text = f.read()
+    except:
+        pass
     return text
 
 
@@ -83,8 +89,8 @@ def main(
     for doc in index.document_iter(where=where):
         start = time()
         text = whisper_stt(doc.path, num_threads, model)
-
-        doc.json_data["content"] = text
+        if text is not None:
+            doc.json_data["content"] = text
 
         if tag:
             if "tags" not in doc.json_data:
@@ -94,7 +100,6 @@ def main(
                     filter(lambda t: not t.startswith("whisper."), doc.json_data["tag"])
                 ).append(tag_value)
 
-        
         index.update_document(doc)
         print(f"Performed STT for {doc.rel_path} ({time() - start:.2f}s)")
         done += 1
